@@ -1,0 +1,74 @@
+# Kaida Shield — File Analyzer Policy
+# Use: kaida shield run --policy file_analyzer.yaml python3 analyze.py report.pdf
+#
+# This policy allows a file analysis agent to read files in a specific
+# directory but blocks all network access and process spawning.
+# Ideal for document processing, data cleaning, or report generation bots.
+
+name: file_analyzer
+description: Policy for file analysis tasks — read-only, no network
+version: "1.0.0"
+default_verdict: DENY
+
+resource_limits:
+  max_cpu_percent: 90.0
+  max_memory_mb: 1024          # file analysis can be memory-intensive
+  max_disk_write_mb: 200       # allow writing processed output
+  max_net_egress_mb: 0         # no network at all
+  max_open_files: 128
+  max_child_processes: 2
+  max_execution_seconds: 900   # 15 minutes
+
+anomaly_detector:
+  max_egress_ingress_ratio: 1.0   # no egress expected
+  max_dns_queries_per_minute: 0   # no DNS expected
+  max_write_entropy: 7.0
+  max_process_tree_depth: 2
+
+rules:
+  # Allow reading files in the workspace
+  - category: file_read
+    pattern: ".*/workspace/.*"
+    verdict: ALLOW
+    description: Allow reading files in the workspace directory
+
+  # Allow reading Python libraries (for imports)
+  - category: file_read
+    pattern: ".*/site-packages/.*"
+    verdict: ALLOW
+    description: Allow reading installed Python packages
+
+  # Allow writing output files
+  - category: file_write
+    pattern: ".*/workspace/output/.*"
+    verdict: ALLOW
+    description: Allow writing to the output directory
+
+  # Allow writing temp files
+  - category: file_write
+    pattern: ".*/tmp/.*"
+    verdict: LOG
+    description: Log writes to temp directories
+
+  # Block all network activity
+  - category: net_connect
+    pattern: ".*"
+    verdict: KILL
+    description: Kill on any network connection attempt
+
+  - category: net_dns
+    pattern: ".*"
+    verdict: KILL
+    description: Kill on any DNS lookup attempt
+
+  # Block file deletion
+  - category: file_delete
+    pattern: ".*"
+    verdict: DENY
+    description: Deny all file deletions
+
+  # Block privilege escalation
+  - category: privilege_escalation
+    pattern: ".*"
+    verdict: KILL
+    description: Kill on any privilege escalation attempt

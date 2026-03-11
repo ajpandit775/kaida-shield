@@ -1,0 +1,68 @@
+# Kaida Shield — Web Scraper Policy
+# Use: kaida shield run --policy web_scraper.yaml python3 my_scraper.py
+#
+# This policy allows a web scraping agent to access specific domains
+# while blocking all file writes, process spawning, and local network access.
+
+name: web_scraper
+description: Policy for a web scraping bot restricted to approved domains
+version: "1.0.0"
+default_verdict: DENY
+
+resource_limits:
+  max_cpu_percent: 50.0
+  max_memory_mb: 512
+  max_disk_write_mb: 10        # only for saving scraped results
+  max_net_egress_mb: 20
+  max_open_files: 64
+  max_child_processes: 2
+  max_execution_seconds: 600   # 10 minutes
+
+anomaly_detector:
+  max_egress_ingress_ratio: 5.0
+  max_dns_queries_per_minute: 60   # scrapers may hit many subdomains
+  max_write_entropy: 7.0
+  max_process_tree_depth: 2
+
+rules:
+  # Allow outbound HTTPS to approved domains
+  - category: net_connect
+    pattern: ".*\\.(example\\.com|wikipedia\\.org)"
+    verdict: ALLOW
+    description: Allow HTTPS connections to approved domains
+
+  # Allow DNS lookups for approved domains
+  - category: net_dns
+    pattern: ".*\\.(example\\.com|wikipedia\\.org)"
+    verdict: ALLOW
+    description: Allow DNS resolution for approved domains
+
+  # Allow writing results to the output directory only
+  - category: file_write
+    pattern: ".*/output/.*"
+    verdict: ALLOW
+    description: Allow writing scraped data to the output directory
+
+  # Allow reading config files
+  - category: file_read
+    pattern: ".*\\.(yaml|json|toml|ini|cfg)$"
+    verdict: ALLOW
+    description: Allow reading configuration files
+
+  # Block writes to system directories
+  - category: file_write
+    pattern: "^/(etc|usr|bin|sbin|var|boot)/"
+    verdict: KILL
+    description: Kill on any attempt to write to system directories
+
+  # Block local/private network access
+  - category: net_connect
+    pattern: "^(10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.|192\\.168\\.|127\\.)"
+    verdict: KILL
+    description: Kill on private network access (possible lateral movement)
+
+  # Block all process spawning (scraper shouldn't run commands)
+  - category: process_spawn
+    pattern: ".*"
+    verdict: DENY
+    description: Deny spawning any child processes

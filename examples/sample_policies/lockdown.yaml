@@ -1,0 +1,76 @@
+# Kaida Shield — Lockdown Policy
+# Use: kaida shield run --policy lockdown.yaml python3 untrusted_agent.py
+#
+# Maximum restriction policy for running untrusted or experimental agents.
+# Everything is denied or killed by default. Only basic file reads and
+# stdout/stderr are permitted. Use this when you don't trust the agent at all
+# and want to observe what it tries to do before granting permissions.
+
+name: lockdown
+description: Maximum restriction — deny everything, observe behavior
+version: "1.0.0"
+default_verdict: KILL
+
+resource_limits:
+  max_cpu_percent: 25.0
+  max_memory_mb: 128
+  max_disk_write_mb: 0         # no disk writes at all
+  max_net_egress_mb: 0         # no network at all
+  max_open_files: 32
+  max_child_processes: 0       # no child processes
+  max_execution_seconds: 60    # 1 minute hard timeout
+
+anomaly_detector:
+  max_egress_ingress_ratio: 1.0
+  idle_burst_threshold_seconds: 10.0
+  burst_syscall_count: 20
+  max_dns_queries_per_minute: 0
+  max_write_entropy: 5.0
+  max_process_tree_depth: 1
+
+rules:
+  # Allow reading the agent's own source files
+  - category: file_read
+    pattern: ".*/workspace/.*"
+    verdict: LOG
+    description: Log all file reads in workspace
+
+  # Allow reading Python standard library
+  - category: file_read
+    pattern: ".*/python3\\.[0-9]+/.*"
+    verdict: ALLOW
+    description: Allow reading Python standard library
+
+  # Quarantine any network attempt for manual review
+  - category: net_connect
+    pattern: ".*"
+    verdict: QUARANTINE
+    description: Quarantine any network connection for review
+
+  - category: net_dns
+    pattern: ".*"
+    verdict: QUARANTINE
+    description: Quarantine any DNS lookup for review
+
+  # Kill on any file modification
+  - category: file_write
+    pattern: ".*"
+    verdict: KILL
+    description: Kill on any file write attempt
+
+  - category: file_delete
+    pattern: ".*"
+    verdict: KILL
+    description: Kill on any file delete attempt
+
+  # Kill on process spawning
+  - category: process_spawn
+    pattern: ".*"
+    verdict: KILL
+    description: Kill on any process spawn attempt
+
+  # Kill on privilege escalation
+  - category: privilege_escalation
+    pattern: ".*"
+    verdict: KILL
+    description: Kill immediately on privilege escalation

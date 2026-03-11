@@ -1,0 +1,75 @@
+# Kaida Shield — API Bot Policy
+# Use: kaida shield run --policy api_bot.yaml python3 my_api_bot.py
+#
+# This policy allows an agent to call specific external APIs
+# while preventing file system access beyond reading configs
+# and writing logs. Good for chatbots, data fetchers, or integrations.
+
+name: api_bot
+description: Policy for API-calling agents with limited file access
+version: "1.0.0"
+default_verdict: DENY
+
+resource_limits:
+  max_cpu_percent: 60.0
+  max_memory_mb: 256
+  max_disk_write_mb: 20
+  max_net_egress_mb: 100       # API calls may transfer meaningful data
+  max_open_files: 64
+  max_child_processes: 2
+  max_execution_seconds: 1800  # 30 minutes for long-running bots
+
+anomaly_detector:
+  max_egress_ingress_ratio: 15.0   # API bots may send more than they receive
+  max_dns_queries_per_minute: 30
+  max_write_entropy: 6.5
+  max_process_tree_depth: 2
+
+rules:
+  # Allow HTTPS connections to approved API endpoints
+  - category: net_connect
+    pattern: "api\\.(openai|anthropic|github)\\.com:443"
+    verdict: ALLOW
+    description: Allow HTTPS to approved API providers
+
+  # Allow DNS for approved domains
+  - category: net_dns
+    pattern: ".*\\.(openai|anthropic|github)\\.com"
+    verdict: ALLOW
+    description: Allow DNS lookups for approved API providers
+
+  # Log any other outbound connections (don't kill, just track)
+  - category: net_connect
+    pattern: ".*:443"
+    verdict: LOG
+    description: Log other HTTPS connections for review
+
+  # Block non-HTTPS connections
+  - category: net_connect
+    pattern: ".*:(80|8080|8443)"
+    verdict: DENY
+    description: Deny insecure HTTP connections
+
+  # Allow reading config and env files
+  - category: file_read
+    pattern: ".*\\.(env|yaml|json|toml)$"
+    verdict: ALLOW
+    description: Allow reading configuration files
+
+  # Allow writing logs
+  - category: file_write
+    pattern: ".*/logs/.*"
+    verdict: ALLOW
+    description: Allow writing to log directory
+
+  # Block writes to system directories
+  - category: file_write
+    pattern: "^/(etc|usr|bin|sbin|var/lib)/"
+    verdict: KILL
+    description: Kill on system directory write attempts
+
+  # Block listening on ports (bot shouldn't be a server)
+  - category: net_listen
+    pattern: ".*"
+    verdict: DENY
+    description: Deny opening server ports

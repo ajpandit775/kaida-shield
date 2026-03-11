@@ -12,11 +12,11 @@ Anyone running AI agents that interact with their computer, files, or the intern
 
 ### Does Kaida slow down my agent?
 
-For most tasks, the overhead is negligible. The Pre-Scanner adds a few milliseconds per input. The Sensor monitors system calls in the background without blocking normal execution. Resource limits are enforced at the kernel level with near-zero overhead.
+For most tasks, the overhead is negligible. Threat scanning adds a few milliseconds per input. Behavioral monitoring runs in the background without blocking normal execution.
 
 ### Does Kaida work on Windows?
 
-Yes. Kaida Shield supports Windows, macOS, and Linux. Some features (like eBPF-based monitoring) are Linux-only, but Kaida automatically falls back to cross-platform alternatives.
+Yes. Kaida Shield supports Windows, macOS, and Linux. Some advanced monitoring features are platform-specific, but Kaida automatically uses the best available method on each platform.
 
 ### Is Kaida Shield free?
 
@@ -32,11 +32,7 @@ Python 3.10 or newer.
 
 ### Does Kaida require Docker?
 
-No. Docker enables Layer 4 (container isolation) for maximum protection, but all other seven layers work without it. Kaida automatically detects what's available and uses whatever protection it can.
-
-### What about Playwright?
-
-Playwright enables Layer 5 (Vision Cell) for screenshot-based threat detection in browser agents. It's optional — install it only if you're running browser-based agents.
+No. Docker enables container isolation for maximum protection, but all other protection layers work without it. Kaida automatically detects what's available and uses whatever protection it can.
 
 ### Can I install Kaida in a virtual environment?
 
@@ -60,7 +56,7 @@ Kaida returns **SAFE**, **SUSPICIOUS**, or **DANGEROUS** with details on what wa
 kaida shield run python3 my_bot.py
 ```
 
-This runs your bot with Kaida monitoring every system action against the default policy.
+This runs your bot with Kaida monitoring every action against the default policy.
 
 ### How do I choose the right policy?
 
@@ -78,25 +74,25 @@ kaida shield run --policy web_scrape python3 my_scraper.py
 
 ### Can I write my own policies?
 
-Yes. Policies are YAML files that define allowed actions, resource limits, and anomaly detection thresholds. See [policy-format.md](policy-format.md) for the full reference.
+Yes. Policies are YAML files that define allowed actions, resource limits, and monitoring thresholds. See [policy-format.md](policy-format.md) for the full reference.
 
 ### What happens when Kaida catches something?
 
 It depends on the verdict in the matching rule:
 
 - **DENY** — the action is silently blocked
-- **QUARANTINE** — the agent is frozen, a forensic snapshot is taken, and the risk is evaluated
+- **QUARANTINE** — the agent is frozen while Kaida evaluates the risk
 - **KILL** — the agent is terminated immediately
 
-In quarantine mode, low-risk events may be auto-released, high-risk events auto-killed, and ambiguous cases wait for your decision.
+In quarantine mode, low-risk events may be auto-released, high-risk events auto-terminated, and ambiguous cases wait for your decision.
 
 ---
 
-## Colony Network
+## Threat Intelligence
 
 ### What is the Colony?
 
-The Colony is an optional peer-to-peer network where Kaida nodes share threat intelligence. When one node detects and kills a threat, its signature is broadcast to all other nodes — like a vaccine.
+The Colony is an optional network where Kaida nodes share threat intelligence. When one node detects and stops a threat, that information is shared with all other nodes to protect them too.
 
 ### Do I have to join the Colony?
 
@@ -110,7 +106,7 @@ export KAIDA_COLONY=off
 
 ### Is my data shared on the Colony?
 
-No personal data is shared. Only threat signatures (hashes and feature vectors of confirmed threats) are broadcast. The Colony protocol uses HMAC-signed messages to prevent forgery.
+No personal data is shared. Only threat signatures of confirmed threats are shared between nodes. Messages are cryptographically signed to prevent forgery.
 
 ---
 
@@ -118,13 +114,13 @@ No personal data is shared. Only threat signatures (hashes and feature vectors o
 
 ### Can Kaida guarantee my agent is safe?
 
-No security tool can guarantee complete protection. Kaida significantly reduces risk through eight independent defense layers, but it's not a substitute for responsible AI usage, professional security auditing, or common sense.
+No security tool can guarantee complete protection. Kaida significantly reduces risk through multiple independent defense layers, but it's not a substitute for responsible AI usage, professional security auditing, or common sense.
 
 ### What if Kaida has a false positive?
 
 If Kaida blocks something that should be allowed, you can:
 1. Adjust your policy to allow the specific action
-2. Lower the anomaly detection thresholds
+2. Adjust monitoring thresholds for your use case
 3. Use `LOG` verdict instead of `DENY` to observe before blocking
 
 ### I found a security vulnerability. What do I do?

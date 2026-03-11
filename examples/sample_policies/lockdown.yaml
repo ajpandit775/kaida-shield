@@ -23,9 +23,9 @@ resource_limits:
 anomaly_detector:
   max_egress_ingress_ratio: 1.0
   idle_burst_threshold_seconds: 10.0
-  burst_syscall_count: 20
+  burst_activity_count: 20
   max_dns_queries_per_minute: 0
-  max_write_entropy: 5.0
+  max_write_randomness: 5.0
   max_process_tree_depth: 1
 
 rules:

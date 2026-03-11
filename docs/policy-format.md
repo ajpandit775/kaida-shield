@@ -22,9 +22,9 @@ resource_limits:
 anomaly_detector:
   max_egress_ingress_ratio: 10.0
   idle_burst_threshold_seconds: 30.0
-  burst_syscall_count: 50
+  burst_activity_count: 50
   max_dns_queries_per_minute: 30
-  max_write_entropy: 7.5
+  max_write_randomness: 7.5
   max_process_tree_depth: 3
 
 rules:
@@ -43,7 +43,7 @@ rules:
 | `version` | string | No | `"1.0.0"` | Policy version for audit trail |
 | `default_verdict` | string | No | `DENY` | What to do when no rule matches |
 | `resource_limits` | object | No | See below | Hard resource ceilings |
-| `anomaly_detector` | object | No | See below | Behavioral anomaly thresholds |
+| `anomaly_detector` | object | No | See below | Behavioral monitoring thresholds |
 | `rules` | list | No | `[]` | Behavioral rules |
 
 ## Verdicts
@@ -55,12 +55,12 @@ Every rule and the default verdict use one of these values:
 | `ALLOW` | Action is permitted |
 | `LOG` | Action is permitted but recorded for review |
 | `DENY` | Action is silently blocked |
-| `QUARANTINE` | Agent is frozen for inspection (freeze-inspect-decide) |
+| `QUARANTINE` | Agent is frozen for inspection |
 | `KILL` | Agent is terminated immediately |
 
 ## Resource Limits
 
-Hard ceilings enforced at the system level. The agent cannot exceed these regardless of its behavior.
+Hard ceilings enforced by Kaida. The agent cannot exceed these regardless of its behavior.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -74,25 +74,25 @@ Hard ceilings enforced at the system level. The agent cannot exceed these regard
 
 ## Anomaly Detector
 
-Behavioral anomaly detection catches "quiet" attacks that rule-based matching misses.
+Behavioral monitoring thresholds that catch unusual activity patterns.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `max_egress_ingress_ratio` | float | `10.0` | Flag if outbound data greatly exceeds inbound (exfiltration) |
-| `idle_burst_threshold_seconds` | float | `30.0` | How long idle before a burst is suspicious |
-| `burst_syscall_count` | int | `50` | Syscalls-per-second threshold after idle |
-| `max_dns_queries_per_minute` | int | `30` | Flag excessive DNS queries (tunneling) |
-| `max_write_entropy` | float | `7.5` | Flag high-entropy writes (encryption/ransomware). Max 8.0. |
-| `max_process_tree_depth` | int | `3` | Max nested process spawning (fork bomb prevention) |
+| `max_egress_ingress_ratio` | float | `10.0` | Flag if outbound data greatly exceeds inbound |
+| `idle_burst_threshold_seconds` | float | `30.0` | How long idle before a sudden burst is suspicious |
+| `burst_activity_count` | int | `50` | Activity-per-second threshold after idle |
+| `max_dns_queries_per_minute` | int | `30` | Flag excessive DNS queries |
+| `max_write_randomness` | float | `7.5` | Flag unusually random write patterns (max 8.0) |
+| `max_process_tree_depth` | int | `3` | Max nested process spawning |
 
 ## Rules
 
-Each rule matches a category of system activity against a regex pattern.
+Each rule matches a category of activity against a pattern.
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `category` | string | Yes | — | Type of activity (see categories below) |
-| `pattern` | string | Yes | — | Regex pattern to match against the target |
+| `pattern` | string | Yes | — | Pattern to match against the target |
 | `verdict` | string | Yes | — | What to do when matched |
 | `description` | string | Yes | — | Human-readable explanation |
 | `max_count` | int | No | `null` | Rate limit: max occurrences per window |

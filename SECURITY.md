@@ -22,19 +22,17 @@ Instead, please email **security@kaida.dev** with:
 
 The following are in scope for security reports:
 
-- Sandbox escapes (container breakout, privilege escalation)
-- Policy engine bypasses (circumventing behavioral rules)
-- Colony protocol vulnerabilities (spoofed threat broadcasts, replay attacks)
-- Authentication bypass in the REST API
-- Denial of service against the sensor
-- Information disclosure from quarantine forensic snapshots
+- Policy enforcement bypasses (circumventing behavioral rules)
+- Protection layer bypasses or escapes
+- Threat detection evasion techniques
+- Denial of service against Kaida Shield
+- Information disclosure from quarantined agents
 
 ## Out of Scope
 
-- Vulnerabilities in Docker itself (report upstream)
+- Vulnerabilities in third-party dependencies (report upstream)
 - Social engineering attacks
 - Issues requiring physical access to the host machine
-- Denial of service via resource exhaustion (handled by policy limits)
 
 ## Recognition
 

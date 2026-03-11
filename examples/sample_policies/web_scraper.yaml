@@ -21,7 +21,7 @@ resource_limits:
 anomaly_detector:
   max_egress_ingress_ratio: 5.0
   max_dns_queries_per_minute: 60   # scrapers may hit many subdomains
-  max_write_entropy: 7.0
+  max_write_randomness: 7.0
   max_process_tree_depth: 2
 
 rules:

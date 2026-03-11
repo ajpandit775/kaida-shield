@@ -54,7 +54,7 @@ To see Kaida's detection capabilities in action:
 kaida demo
 ```
 
-This runs 14 built-in test scenarios — phishing URLs, reverse shells, zip bombs, DNS tunneling, and more — and shows you exactly what Kaida catches and why.
+This runs built-in test scenarios — phishing URLs, dangerous commands, suspicious files, and more — and shows you exactly what Kaida catches and why.
 
 ## Running an Agent with Protection
 

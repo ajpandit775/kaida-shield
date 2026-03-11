@@ -22,7 +22,7 @@ resource_limits:
 anomaly_detector:
   max_egress_ingress_ratio: 15.0   # API bots may send more than they receive
   max_dns_queries_per_minute: 30
-  max_write_entropy: 6.5
+  max_write_randomness: 6.5
   max_process_tree_depth: 2
 
 rules:

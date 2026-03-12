@@ -82,7 +82,7 @@ Running multiple bots? Create a separate policy for each one. Your email bot, re
 
 ## Important Notice
 
-> Kaida Shield is a security tool in active development (v0.1.3). It is provided as-is under the Apache 2.0 license with no warranties of any kind.
+> Kaida Shield is a security tool in active development (v0.2.0). It is provided as-is under the Apache 2.0 license with no warranties of any kind.
 >
 > - Kaida Shield **reduces risk** but **does not guarantee** complete protection against all threats
 > - No security tool can prevent all attacks — Kaida adds defense-in-depth, not invincibility

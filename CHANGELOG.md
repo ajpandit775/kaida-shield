@@ -2,6 +2,22 @@
 
 All notable changes to Kaida Shield will be documented in this file.
 
+## [0.2.0] - 2026-03-12
+
+### Added
+
+- **Loop detection** — catches bots stuck repeating the same action and freezes them
+- **Rate spike detection** — alerts on sudden activity bursts (configurable multiplier)
+- **Stall detection** — notifies when bots go idle for too long
+- **Token burn detection** — alerts on excessive outbound API calls
+- **Resource anomaly detection** — catches sustained CPU/memory overuse
+- **Configurable thresholds** — all anomaly detection settings tunable per policy in YAML
+- 2 new demo scenarios (`kaida demo`) showing loop and rate spike detection
+- Dashboard Status tab now shows "Anomaly Detection: Active"
+- 182 tests passing
+
+---
+
 ## [0.1.3] - 2026-03-11
 
 ### Added

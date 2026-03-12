@@ -2,6 +2,22 @@
 
 All notable changes to Kaida Shield will be documented in this file.
 
+## [0.1.3] - 2026-03-11
+
+### Added
+
+- **Linux support** — Ubuntu, Debian, and other x86_64 Linux distributions
+- **macOS support** — Apple Silicon (M1/M2/M3/M4) native builds
+- **Automated multi-platform builds** — wheels built and published for all three platforms via CI
+- **Cleaned up package metadata** — minimal, professional PyPI listing
+
+### Fixed
+
+- Build pipeline now works cross-platform (Linux, macOS, Windows)
+- Wheel platform tags standardized for PyPI compatibility
+
+---
+
 ## [0.1.0] - 2026-03-04
 
 ### Added

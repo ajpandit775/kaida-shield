@@ -2,6 +2,21 @@
 
 All notable changes to Kaida Shield will be documented in this file.
 
+## [0.2.1] - 2026-03-12
+
+### Changed
+
+- **Complete dashboard redesign** — 4 simple tabs instead of 7
+- **Welcome wizard** for first-time users — guided setup with template picker
+- **Browse button** to select bot files — no terminal commands needed
+- **Amber violation alerts** with plain English explanations (not scary red)
+- **Shield Strength meter** shows your protection level at a glance
+- **Trust badge**: "100% Local — your data never leaves this computer"
+- **Recent Bots dropdown** remembers your last 5 commands
+- Policy builder now shows "Do this / Not this" examples
+
+---
+
 ## [0.2.0] - 2026-03-12
 
 ### Added

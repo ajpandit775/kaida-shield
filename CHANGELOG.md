@@ -2,6 +2,20 @@
 
 All notable changes to Kaida Shield will be documented in this file.
 
+## [0.3.0] - 2026-03-15
+
+### Added
+
+- **Supervised mode** — Kaida now asks you before blocking, with Allow Once / Allow Always / Block options
+- **Email notifications** — get alerts when your bot is frozen or killed (`kaida setup` to configure)
+- **Telegram notifications** — real-time alerts with interactive approve/block buttons in Telegram (`kaida setup telegram`)
+- **Allow Always learning** — approved actions are remembered so you're not asked twice
+- **Setup wizard** — `kaida setup` walks you through email and Telegram configuration
+- **Dashboard notification settings** — configure Email and Telegram from the UI
+- 295 tests passing
+
+---
+
 ## [0.2.1] - 2026-03-12
 
 ### Changed

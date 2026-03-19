@@ -604,6 +604,255 @@
         }
         .honest-list.yes li::before { content: '\2713'; color: var(--cyan); }
         .honest-list.no li::before { content: '\2192'; color: var(--text-muted); }
+        /* ===== DOWNLOAD BUTTON ===== */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, #00c6a8, #0096c7);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 24px rgba(0, 198, 168, 0.35);
+            letter-spacing: 0.2px;
+        }
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 198, 168, 0.5);
+        }
+        .download-note {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .hero-divider {
+            margin: 24px 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .hero-divider::before,
+        .hero-divider::after {
+            content: '';
+            flex: 1;
+            max-width: 80px;
+            height: 1px;
+            background: var(--border);
+        }
+        .dev-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+        .python-note {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .python-note a { color: var(--cyan); text-decoration: none; }
+        .python-note a:hover { text-decoration: underline; }
+        /* ===== STATS STRIP ===== */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease 0.5s both;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--cyan);
+            display: block;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .stat-live {
+            color: #4caf50;
+        }
+        .stat-live-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+            vertical-align: middle;
+        }
+        /* ===== SCREENSHOT SECTION ===== */
+        .screenshot-section {
+            background: var(--bg-accent);
+        }
+        .screenshot-placeholder {
+            background: #1a1a2e;
+            border: 2px dashed #2a3350;
+            border-radius: 12px;
+            padding: 80px 40px;
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 40px;
+            font-size: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color 0.3s;
+        }
+        .screenshot-placeholder:hover {
+            border-color: rgba(0, 229, 199, 0.3);
+        }
+        /* ===== WORKS ALONGSIDE ===== */
+        .works-alongside {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .compat-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .compat-list span {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 18px;
+            background: rgba(0, 229, 199, 0.06);
+            border: 1px solid rgba(0, 229, 199, 0.18);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .compat-list span:hover {
+            background: rgba(0, 229, 199, 0.12);
+            border-color: var(--cyan-dim);
+        }
+        .compat-note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        /* ===== CTA TWO-PATH ===== */
+        .cta-paths {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+        @media (max-width: 680px) {
+            .cta-paths { grid-template-columns: 1fr; }
+        }
+        .cta-path-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+            text-align: left;
+        }
+        .cta-path-card.featured {
+            border-color: rgba(0, 198, 168, 0.4);
+            background: rgba(0, 198, 168, 0.04);
+        }
+        .cta-path-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .cta-path-card.featured .cta-path-label {
+            color: #00c6a8;
+        }
+        .cta-path-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .cta-path-steps {
+            list-style: none;
+            margin: 0; padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .cta-path-steps li {
+            font-size: 14px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .cta-path-steps li code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--cyan);
+            background: rgba(0,0,0,0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .cta-path-steps li .step-desc {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .path-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .path-cta-btn.win {
+            background: linear-gradient(135deg, #00c6a8, #0096c7);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(0,198,168,0.3);
+        }
+        .path-cta-btn.win:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,198,168,0.45);
+        }
+        .path-cta-btn.pip {
+            background: transparent;
+            border: 1px solid rgba(0,229,199,0.3);
+            color: var(--cyan);
+        }
+        .path-cta-btn.pip:hover {
+            background: rgba(0,229,199,0.06);
+            border-color: var(--cyan-dim);
+        }
         /* ===== ANIMATIONS ===== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -633,6 +882,7 @@
         <a href="#how-it-works">How It Works</a>
         <a href="#catches">Features</a>
         <a href="https://github.com/ajpandit775/kaida-shield" target="_blank">GitHub</a>
+        <a href="https://github.com/ajpandit775/kaida-shield/releases/latest" target="_blank" style="color:var(--cyan);font-weight:600;">⬇ Download .exe</a>
         <a href="https://pypi.org/project/kaida-shield/" target="_blank" class="nav-cta">Install Free</a>
     </div>
 </nav>
@@ -641,24 +891,60 @@
     <div class="hero-content">
         <div class="hero-badge">
             <span class="dot"></span>
-            v0.2.0 — Now with anomaly detection
+            v0.3.5 — Now with quickstart live demo
         </div>
         <h1>Your bots work.<br><span class="highlight">Kaida keeps them safe.</span></h1>
         <p class="hero-sub">
             AI agents need dangerous permissions to be useful. Kaida monitors what they actually do — and freezes them the moment they go off-script.
         </p>
         <div class="hero-cta-group">
-            <a href="https://pypi.org/project/kaida-shield/" class="btn-primary" target="_blank">
-                Install Free →
+            <a href="#get-started" class="btn-primary">
+                Get Started Free →
             </a>
             <a href="#how-it-works" class="btn-secondary">
                 See How It Works
             </a>
         </div>
-        <div class="hero-install">
+
+        <!-- Download Windows .exe -->
+        <div class="hero-install" id="get-started">
+            <a href="https://github.com/ajpandit775/kaida-shield/releases/latest"
+               class="download-btn" target="_blank">
+                ⬇ Download for Windows (.exe)
+            </a>
+            <p class="download-note">No Python needed. No terminal. Just download and run.</p>
+
+            <div class="hero-divider">or for developers</div>
+
+            <div class="dev-label">pip install</div>
             <div class="install-box" onclick="navigator.clipboard.writeText('pip install kaida-shield'); this.querySelector('.copy-hint').textContent='Copied!'">
                 pip install kaida-shield
                 <span class="copy-hint">Click to copy</span>
+            </div>
+            <p class="python-note">
+                Requires Python 3.10+. Don't have Python?
+                <a href="https://www.python.org/downloads/" target="_blank">Download it here</a>
+                or use the Windows .exe above.
+            </p>
+        </div>
+
+        <!-- Stats strip -->
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-value">980+</span>
+                <span class="stat-label">Downloads</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">v0.3.5</span>
+                <span class="stat-label">Latest</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">323</span>
+                <span class="stat-label">Tests Passing</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value stat-live"><span class="stat-live-dot"></span>LIVE</span>
+                <span class="stat-label">Colony Network</span>
             </div>
         </div>
     </div>
@@ -758,6 +1044,20 @@
                     <p>If your bot tries something outside your rules, Kaida <strong>freezes it</strong> — doesn't kill it. Your work is preserved. You decide what to do: release it, adjust the rules, or stop it. No work lost.</p>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+<!-- SCREENSHOT SECTION -->
+<section class="screenshot-section">
+    <div class="container">
+        <div class="section-label">Dashboard</div>
+        <h2>See What You Get</h2>
+        <p class="section-desc">
+            A guided setup wizard walks you through protecting your first bot in under 2 minutes. Then a live dashboard shows every action your bot takes — allowed, blocked, or flagged.
+        </p>
+        <div class="screenshot-placeholder">
+            <!-- Replace this with actual screenshot -->
+            📊 &nbsp; Dashboard screenshot coming soon &nbsp;—&nbsp; run <strong>kaida ui</strong> to see it live
         </div>
     </div>
 </section>
@@ -915,7 +1215,7 @@
             <div class="demo-body">
                 <span class="prompt">$</span> kaida demo<br>
                 <br>
-                <span class="dim">──── Kaida Shield v0.2.0 — Live Threat Detection Demo ────</span><br>
+                <span class="dim">──── Kaida Shield v0.3.5 — Live Threat Detection Demo ────</span><br>
                 <br>
                 <span class="dim">[1/16]</span> Scanning URL: https://paypa1-secure.com/login<br>
                 <span class="danger">       ✗ DANGEROUS — Phishing: brand impersonation detected</span><br>
@@ -1011,16 +1311,38 @@
                 </ul>
             </div>
             <div class="honest-col">
-                <h3><span style="color: var(--text-muted);">→</span> Coming soon</h3>
+                <h3><span style="color: var(--text-muted);">→</span> Limitations &amp; roadmap</h3>
                 <ul class="honest-list no">
                     <li>Cannot see inside encrypted traffic (sees destinations, not content)</li>
                     <li>Cannot monitor what the AI model is "thinking"</li>
                     <li>macOS-specific deep monitoring (in development)</li>
-                    <li>One-click installer for non-technical users</li>
-                    <li>Web-based dashboard (currently local only)</li>
+                    <li>Cloud-based dashboard (currently runs locally — coming soon)</li>
+                    <li>Mobile push notifications via Telegram (in beta)</li>
                 </ul>
             </div>
         </div>
+    </div>
+</section>
+<!-- WORKS ALONGSIDE -->
+<section class="works-alongside">
+    <div class="container">
+        <div class="section-label">Compatibility</div>
+        <h2>Works Alongside Your Existing Security</h2>
+        <p class="section-desc">
+            Kaida monitors behavior inside any environment — it doesn't replace your sandbox or container, it watches what happens inside it.
+        </p>
+        <div class="compat-list">
+            <span>🐳 Docker</span>
+            <span>🔐 NVIDIA NeMo Guardrails</span>
+            <span>🤖 LangChain</span>
+            <span>🦾 CrewAI</span>
+            <span>⚡ AutoGen</span>
+            <span>🧩 Any sandbox</span>
+            <span>🪟 Windows</span>
+            <span>🐧 Linux</span>
+            <span>🍎 macOS</span>
+        </div>
+        <p class="compat-note">They build the cage. Kaida watches what happens inside it.</p>
     </div>
 </section>
 <!-- CTA -->
@@ -1028,32 +1350,72 @@
     <div class="container">
         <h2>Start protecting your bots<br>in 30 seconds</h2>
         <p class="section-desc" style="margin: 16px auto 0; text-align: center;">
-            Free. No account needed. No credit card. Just install and run.
+            Free. No account needed. No credit card. Choose your path:
         </p>
-        <div class="cta-install-steps">
-            <div class="cta-step">
-                <div class="num">Step 1</div>
-                <div class="cmd">pip install kaida-shield</div>
-                <p>Install the package</p>
+
+        <div class="cta-paths">
+            <!-- PATH 1: Windows .exe -->
+            <div class="cta-path-card featured">
+                <div class="cta-path-label">⬇ Path 1 — Easiest</div>
+                <h3>Download for Windows</h3>
+                <ul class="cta-path-steps">
+                    <li>
+                        <span>1.</span>
+                        <span>
+                            <a href="https://github.com/ajpandit775/kaida-shield/releases/latest"
+                               style="color:var(--cyan);text-decoration:none;font-weight:600;"
+                               target="_blank">Download KaidaShield.exe</a>
+                            <span class="step-desc"> — no Python needed</span>
+                        </span>
+                    </li>
+                    <li><span>2.</span><span>Double-click to run</span></li>
+                    <li><span>3.</span><span>Dashboard opens in your browser</span></li>
+                    <li><span>4.</span><span>Wizard guides you through setup</span></li>
+                </ul>
+                <a href="https://github.com/ajpandit775/kaida-shield/releases/latest"
+                   class="path-cta-btn win" target="_blank">
+                    ⬇ Download .exe
+                </a>
             </div>
-            <div class="cta-step">
-                <div class="num">Step 2</div>
-                <div class="cmd">kaida ui</div>
-                <p>Open the dashboard</p>
-            </div>
-            <div class="cta-step">
-                <div class="num">Step 3</div>
-                <div class="cmd">Describe your bot</div>
-                <p>Kaida generates the rules</p>
+
+            <!-- PATH 2: pip install -->
+            <div class="cta-path-card">
+                <div class="cta-path-label">🐍 Path 2 — For Developers</div>
+                <h3>pip install</h3>
+                <ul class="cta-path-steps">
+                    <li>
+                        <span>1.</span>
+                        <span><code>pip install kaida-shield</code></span>
+                    </li>
+                    <li>
+                        <span>2.</span>
+                        <span>
+                            <code>kaida quickstart</code>
+                            <span class="step-desc"> — watch Kaida protect a bot live</span>
+                        </span>
+                    </li>
+                    <li>
+                        <span>3.</span>
+                        <span>
+                            <code>kaida ui</code>
+                            <span class="step-desc"> — open the dashboard</span>
+                        </span>
+                    </li>
+                    <li>
+                        <span>4.</span>
+                        <span>
+                            <code>kaida shield run python my_bot.py</code>
+                        </span>
+                    </li>
+                </ul>
+                <a href="https://pypi.org/project/kaida-shield/" class="path-cta-btn pip" target="_blank">
+                    View on PyPI →
+                </a>
             </div>
         </div>
-        <div style="margin-top: 40px;">
-            <a href="https://pypi.org/project/kaida-shield/" class="btn-primary" target="_blank" style="font-size: 17px; padding: 16px 40px;">
-                Install Kaida Shield Free →
-            </a>
-        </div>
-        <p style="margin-top: 20px; font-size: 13px; color: var(--text-muted);">
-            Works with OpenClaw, LangChain, CrewAI, AutoGPT, and any Python-based agent.
+
+        <p style="margin-top: 32px; font-size: 13px; color: var(--text-muted); text-align:center;">
+            Works with OpenClaw, LangChain, CrewAI, AutoGen, and any Python-based agent.
         </p>
     </div>
 </section>
@@ -1065,7 +1427,7 @@
         <a href="https://github.com/ajpandit775/kaida-shield/issues" target="_blank">Report a Bug</a>
         <a href="https://github.com/ajpandit775/kaida-shield/discussions" target="_blank">Discussions</a>
     </div>
-    <p>Kaida Shield v0.2.0 · Apache 2.0 · Free forever</p>
+    <p>Kaida Shield v0.3.5 · Apache 2.0 · Free forever</p>
     <p style="margin-top: 8px; font-size: 12px;">
         Kaida Shield reduces risk but does not guarantee complete protection. No security tool can prevent all attacks.
     </p>

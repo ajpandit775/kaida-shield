@@ -1,0 +1,27 @@
+# Kaida Shield Policy: Data Scraper
+# Generated from: "My bot scrapes product prices from Amazon and eBay and saves to a CSV"
+
+name: data-scraper
+description: Scraping bot that collects product data from e-commerce sites
+version: 1
+
+allowed_domains:
+  - amazon.com
+  - ebay.com
+  - www.amazon.com
+  - www.ebay.com
+
+allowed_paths:
+  - ~/scraping/data/
+  - ~/scraping/output/
+
+blocked_patterns:
+  - "rm -rf"
+  - "curl * | bash"
+  - "DROP TABLE"
+
+anomaly_detection:
+  max_requests_per_minute: 10
+  loop_threshold: 0.8
+  stall_timeout: 120
+  max_token_burn: 20000

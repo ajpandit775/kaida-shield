@@ -92,6 +92,32 @@ Running multiple bots? Create a separate policy for each one. Your email bot, re
 >
 > By using Kaida Shield, you acknowledge these limitations. For the complete terms, see the [LICENSE](LICENSE) file.
 
+## Resources
+
+### Example Policies
+Ready-to-use policy templates for common bot types:
+- [Email Assistant](examples/policies/email-assistant.yaml)
+- [Web Researcher](examples/policies/web-researcher.yaml)
+- [Social Media Manager](examples/policies/social-media-bot.yaml)
+- [Code Assistant](examples/policies/code-assistant.yaml)
+- [Data Scraper](examples/policies/data-scraper.yaml)
+
+### Integration Guides
+Step-by-step setup for popular frameworks:
+- [OpenClaw](docs/guides/openclaw-setup.md)
+- [LangChain](docs/guides/langchain-setup.md)
+- [CrewAI](docs/guides/crewai-setup.md)
+- [Any Python Script](docs/guides/custom-bot-setup.md)
+
+### Tutorials
+- [Writing Your First Policy](docs/tutorials/first-policy.md)
+- [Understanding Alerts](docs/tutorials/understanding-alerts.md)
+- [Telegram Notifications](docs/tutorials/telegram-setup.md)
+
+### Blog
+- [Why Your AI Agent Needs Runtime Monitoring](docs/blog/why-runtime-monitoring.md)
+- [Why Traditional Firewalls Don't Work for AI Agents](docs/blog/kaida-vs-firewalls.md)
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).

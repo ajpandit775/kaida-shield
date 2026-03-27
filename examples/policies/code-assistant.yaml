@@ -1,0 +1,31 @@
+# Kaida Shield Policy: Code Assistant
+# Generated from: "My bot helps me write code, runs tests, and commits to GitHub"
+
+name: code-assistant
+description: Coding bot that writes, tests, and commits code
+version: 1
+
+allowed_domains:
+  - github.com
+  - api.github.com
+  - stackoverflow.com
+  - pypi.org
+  - npmjs.com
+
+allowed_paths:
+  - ~/projects/
+  - ~/code/
+  - /tmp/
+
+blocked_patterns:
+  - "rm -rf /"
+  - "rm -rf ~"
+  - "curl * | bash"
+  - "chmod 777"
+  - "> /etc/"
+
+anomaly_detection:
+  max_requests_per_minute: 40
+  loop_threshold: 0.5
+  stall_timeout: 600
+  max_token_burn: 200000

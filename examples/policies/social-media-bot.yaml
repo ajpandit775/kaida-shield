@@ -1,0 +1,29 @@
+# Kaida Shield Policy: Social Media Manager
+# Generated from: "My bot posts scheduled content to Twitter and LinkedIn, monitors engagement"
+
+name: social-media-manager
+description: Social media bot that posts, schedules, and monitors engagement
+version: 1
+
+allowed_domains:
+  - api.twitter.com
+  - twitter.com
+  - x.com
+  - api.linkedin.com
+  - linkedin.com
+  - buffer.com
+
+allowed_paths:
+  - ~/social-media/content/
+  - ~/social-media/analytics/
+
+blocked_patterns:
+  - "rm -rf"
+  - "DELETE FROM"
+  - "DROP TABLE"
+
+anomaly_detection:
+  max_requests_per_minute: 15
+  loop_threshold: 0.7
+  stall_timeout: 300
+  max_token_burn: 30000

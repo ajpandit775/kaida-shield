@@ -2,6 +2,26 @@
 
 All notable changes to Kaida Shield will be documented in this file.
 
+## [0.3.8] - 2026-03-27
+
+### Fixed
+- **Accurate status reporting** — "COMPLETED WITH WARNINGS" when deny events exist (was incorrectly showing "COMPLETED SAFELY")
+- **Tighter default policy** — code_execution now restricts network to package registries only
+- **Reverse DNS** — network events show hostname instead of raw IP addresses
+- **Expanded credential detection** — catches /etc/shadow, .ssh/*, .aws/*, .env, .pem, id_rsa, and more
+
+---
+
+## [0.3.7] - 2026-03-27
+
+### Added
+- **Runtime sensor integration** — monitoring loop now polls OS-level network connections, file access, and child processes in real time
+- **--policy flag** — select policy templates from the command line: `kaida shield run --policy web_researcher python my_bot.py`
+- **Policy aliases** — friendly names (email_assistant, web_researcher, etc.) map to built-in policies
+- **Supervised mode** — pauses on violations and prompts Block / Allow Once / Allow Always
+
+---
+
 ## [0.3.0] - 2026-03-15
 
 ### Added
